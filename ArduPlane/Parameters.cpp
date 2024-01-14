@@ -1258,6 +1258,15 @@ const AP_Param::GroupInfo ParametersG2::var_info[] = {
     // @Bitmask: 0:Roll,1:Pitch,2:Yaw
     // @User: Standard
     AP_GROUPINFO("AUTOTUNE_AXES", 34, ParametersG2, axis_bitmask, 7),
+
+    // @Param: GUID_ATT_TIMEOUT
+    // @DisplayName: Guided attitude timeout
+    // @Description: Timeout for set points given in GUIDED mode via SET_ATTITUDE_TARGET messages
+    // @Range: 100 10000
+    // @Increment: 50
+    // @Units: ms
+    // @User: Standard
+    AP_GROUPINFO("GUID_ATT_TIMEOUT", 35, ParametersG2, guided_attitude_timeout, 3000),
     
     AP_GROUPEND
 };

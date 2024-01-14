@@ -585,6 +585,9 @@ public:
     
     AP_Int8         axis_bitmask; // axes to be autotuned
 
+    // Timeout for set points given in GUIDED mode via SET_ATTITUDE_TARGET messages
+    AP_Int16 guided_attitude_timeout;
+
     // just to make compilation easier when all things are compiled out...
     uint8_t unused_integer;
 };

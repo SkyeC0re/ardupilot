@@ -35,10 +35,12 @@ void ModeGuided::update()
         return;
     }
 #endif
+    // Received set points are only active for the configured timeout
+    const uint32_t timeout = (uint32_t) plane.g2.guided_attitude_timeout;
 
-    // Received an external msg that guides roll in the last 3 seconds?
+    // Received roll set points takes precedence
     if (plane.guided_state.last_forced_rpy_ms.x > 0 &&
-            millis() - plane.guided_state.last_forced_rpy_ms.x < 3000) {
+            millis() - plane.guided_state.last_forced_rpy_ms.x < timeout) {
         plane.nav_roll_cd = constrain_int32(plane.guided_state.forced_rpy_cd.x, -plane.roll_limit_cd, plane.roll_limit_cd);
         plane.update_load_factor();
 
@@ -75,17 +77,18 @@ void ModeGuided::update()
         plane.calc_nav_roll();
     }
 
+    // Received pitch set points takes precedence
     if (plane.guided_state.last_forced_rpy_ms.y > 0 &&
-            millis() - plane.guided_state.last_forced_rpy_ms.y < 3000) {
+            millis() - plane.guided_state.last_forced_rpy_ms.y < timeout) {
         plane.nav_pitch_cd = constrain_int32(plane.guided_state.forced_rpy_cd.y, plane.pitch_limit_min_cd, plane.aparm.pitch_limit_max_cd.get());
     } else {
         plane.calc_nav_pitch();
     }
 
-    // Received an external msg that guides throttle in the last 3 seconds?
+    // Received throttle set points takes precedence
     if (plane.aparm.throttle_cruise > 1 &&
             plane.guided_state.last_forced_throttle_ms > 0 &&
-            millis() - plane.guided_state.last_forced_throttle_ms < 3000) {
+            millis() - plane.guided_state.last_forced_throttle_ms < timeout) {
         SRV_Channels::set_output_scaled(SRV_Channel::k_throttle, plane.guided_state.forced_throttle);
     } else {
         plane.calc_throttle();
